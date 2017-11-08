@@ -35,6 +35,15 @@
             return cookieValue;
         }
 
+        var csrftoken = getCookie('csrftoken');
+
+        if (csrftoken === null) {
+            csrfelems = document.getElementsByName('csrfmiddlewaretoken');
+            if (csrfelems.length > 0 && typeof csrfelems[0].value !== 'undefined') {
+                csrftoken = csrfelems[0].value;
+            }
+        }
+
         // Each multiple editor fields
         mainMartor.each(function(i, obj) {
             var field_name   = $(obj).data('field-name');
@@ -86,7 +95,7 @@
                             url: textareaId.data('search-users-url'),
                             data: {
                                 'username': username,
-                                'csrfmiddlewaretoken': getCookie('csrftoken')
+                                'csrfmiddlewaretoken': csrftoken
                             },
                             success: function(data) {
                                 if (data['status'] == 200) {
@@ -147,7 +156,7 @@
                 var value = editor.getValue();
                 var form = new FormData();
                 form.append('content', value);
-                form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                form.append('csrfmiddlewaretoken', csrftoken);
 
                 $.ajax({
                     url: textareaId.data('markdownfy-url'),
@@ -468,7 +477,7 @@
                 var firstForm = $('#'+editorId).closest('form').get(0);
                 var field_name = editor.container.id.replace('martor-', '');
                 var form = new FormData(firstForm);
-                form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                form.append('csrfmiddlewaretoken', csrftoken);
 
                 $.ajax({
                     url: textareaId.data('upload-url'),
